@@ -32,21 +32,46 @@ Database ER daigram
 
 ## Wireframe
 
-Dashboard page
+#### Dashboard page
 
 ![dashboard](../images/dashboard.png)
 
-Inventory page
+#### Inventory page
 
 ![inventory](../images/Inventory.png)
 
-Category page
+- seller can add product
+
+![inventory-add](../images/add_product.png)
+
+- seller can edit product
+
+![inventory-edit](../images/edit_product.png)
+
+#### Category page
 
 ![category](../images/Category.png)
 
-Order page
-- Seller can add orders.
-- If the order status is draft, the items in the order can be edited.
-- If the order status is complete, seller cannot edit it, only view order detail
+- Seller can add category for product.
+
+![category-add](../images/add_category.png)
+
+- seller can edit catefory name
+
+![category-edit](../images/edit_category.png)
+
+#### Order page
 
 ![Order](../images/Order.png)
+
+- Seller can add orders.
+
+![Order-add](../images/add_order.png)
+
+- If the order status is draft, the items in the order can be edited.
+
+![Order-edit](../images/edit_order.png)
+
+- If the order status is complete, seller cannot edit it, only view order detail
+
+![Order-view](../images/view_order.png)
