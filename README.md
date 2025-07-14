@@ -8,9 +8,10 @@ Warehouse Management
 
 ### Project Description
 website for tracking product in warehouse
-- crud product
-- crud product category
-- dashboard
+
+### feature
+- Product/Item management
+- Analytic dashboard for administrator
 
 ### Why
 
