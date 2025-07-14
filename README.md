@@ -10,9 +10,8 @@ Warehouse Management
 website for tracking product in warehouse
 
 ### feature
-- crud product
-- crud product category
-- dashboard
+- Product/Item management
+- Analytic dashboard for administrator
 
 ### Why
 
