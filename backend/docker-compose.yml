@@ -9,13 +9,5 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - 8080:80
-    environment:
-      PMA_HOST: mysql
-
 volumes:
   db_data:
