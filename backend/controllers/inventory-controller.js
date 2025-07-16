@@ -15,7 +15,7 @@ export const createProduct = async (req, res) => {
     try {
         const newProduct = await Prisma.product.create({
             data: {
-                product_name: String(products_name),
+                product_name: String(product_name),
                 quantity: Number(quantity),
                 price: parseFloat(price),
                 cost_price: parseFloat(cost_price)
