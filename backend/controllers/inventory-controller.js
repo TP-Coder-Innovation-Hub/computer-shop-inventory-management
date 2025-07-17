@@ -1,8 +1,48 @@
 import { Prisma } from "../config/prisma.js"
 
-export const getAllProducts = async (req, res) => {
-    const product = await Prisma.product.findMany()
-    res.json(product)
+export const getProducts = async (req, res) => {
+
+    try {
+
+        const { page = 1, search = '', limit = 5 } = req.query
+
+        const pageNumber = parseInt(page)
+        const pageSize = parseInt(limit)
+        const skip = (pageNumber - 1) * pageSize
+
+        const searchCondition = search ? {
+            product_name: {
+                contains: String(search),
+            }
+        } : {}
+
+        const products = await Prisma.product.findMany({
+            where: searchCondition,
+            skip: skip,
+            take: pageSize,
+            orderBy: {
+                id: 'asc'
+            }
+        })
+
+        let productCount = await Prisma.product.count({
+            where: searchCondition
+        }
+        )
+        const totalPage = Math.ceil(productCount / pageSize)
+
+        return res.json({
+            data: products,
+            pagination: {
+                totalPage: totalPage,
+                currentPage: pageNumber,
+                limit: pageSize
+            }
+        })
+    } catch (err) {
+        return res.stauts(500).json({ message: 'error getting products', error: err.message })
+    }
+
 }
 
 export const createProduct = async (req, res) => {
