@@ -8,10 +8,6 @@ export const getAllProducts = async (req, res) => {
 export const createProduct = async (req, res) => {
     const { product_name, quantity, price, cost_price } = req.body
 
-    if (!product_name || !quantity || !price || !cost_price) {
-        return res.status(400).json({ message: 'Please fill all fields' })
-    }
-
     try {
         const newProduct = await Prisma.product.create({
             data: {
@@ -31,10 +27,6 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
     const { id } = req.params
     const { product_name, quantity, price, cost_price } = req.body
-
-    if (!product_name || !quantity || !price || !cost_price) {
-        return res.status(400).json({ message: 'Please fill all fields' })
-    }
 
     try {
         const updateProduct = await Prisma.product.update({
