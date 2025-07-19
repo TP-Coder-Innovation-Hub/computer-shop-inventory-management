@@ -40,7 +40,7 @@ export const getProducts = async (req, res) => {
             }
         })
     } catch (err) {
-        return res.stauts(500).json({ message: 'error getting products', error: err.message })
+        return res.status(500).json({ message: 'error getting products', error: err.message })
     }
 
 }
