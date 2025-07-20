@@ -16,7 +16,7 @@ function Table({ products = [] }) {
                     <tr className="bg-gray-400">
                         <th className="px-4 py-2 text-white border border-gray-300 text-left">PID</th>
                         <th className="px-4 py-2 text-white border border-gray-300 text-left">Product Name</th>
-                        <th className="px-4 py-2 text-white border border-gray-300 text-center">Price</th>
+                        <th className="px-4 py-2 text-white border border-gray-300 text-center">Price(THB)</th>
                         <th className="px-4 py-2 text-white border border-gray-300 text-center">Quantity</th>
                         <th className="px-4 py-2 text-white border border-gray-300 text-center"></th>
                     </tr>
