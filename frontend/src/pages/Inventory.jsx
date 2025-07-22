@@ -7,6 +7,7 @@ import Pagination from '../components/Pagination';
 import { useState } from 'react';
 import LimitSelector from '../components/LimitSelector';
 import Modal from '../components/Modal';
+import Swal from 'sweetalert2'
 
 function Inventory() {
 
@@ -19,8 +20,20 @@ function Inventory() {
 
   const [productName, setProductName] = useState('')
   const [quantity, setQuantity] = useState(0)
-  const [price, setPrice] = useState(0)
-  const [costPrice, setCostPrice] = useState(0)
+  const [price, setPrice] = useState(1)
+  const [costPrice, setCostPrice] = useState(1)
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+  })
 
   async function fetchProducts(page = 1, limit = 5) {
     try {
@@ -30,7 +43,11 @@ function Inventory() {
       setActivePage(res.data.pagination.activePage ?? page)
       setLimit(res.data.pagination.limit)
     } catch (err) {
-      console.error('Fetch error:', err.message)
+      console.log(err)
+      await Toast.fire({
+        icon: 'error',
+        title: err.message
+      })
     }
   }
 
@@ -39,24 +56,59 @@ function Inventory() {
     setActivePage(page)
   }
 
-  async function handleAddProduct(e){
-    
+  async function handleAddProduct(e) {
     e.preventDefault()
 
     const productData = {
       product_name: String(productName),
-      quantity:parseInt(quantity),
+      quantity: parseInt(quantity),
       price: parseFloat(price),
       cost_price: parseFloat(costPrice)
     }
 
-    try{
+    try {
       const res = await axios.post(`${String(import.meta.env.VITE_BACKEND)}/inventory`, productData)
-      fetchProducts(activePage,limit)
+      fetchProducts(activePage, limit)
       setAddModal(false)
-      
-    }catch(err){
-      console.log(`add product fail : ${err}`)
+      await Toast.fire({
+        icon: 'success',
+        title: res.data.message
+      })
+    } catch (err) {
+      console.log(err.response.data.message)
+      await Toast.fire({
+        icon: 'error',
+        title: err.response.data.message,
+      })
+    }
+
+  }
+
+  async function handleDelete(e, id) {
+    e.preventDefault()
+
+    const result = await Swal.fire({
+      text: "Do you really want to delete?",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Delete"
+    })
+
+    if (result.isConfirmed) {
+      try {
+        const res = await axios.delete(`${String(import.meta.env.VITE_BACKEND)}/inventory/${id}`)
+        fetchProducts(activePage, limit)      
+        await Toast.fire({
+          icon: 'success',
+          title: res.data.message,
+        })
+      } catch (err) {
+        await Toast.fire({
+          icon: 'error',
+          title: err.response.data.message,
+        })
+      }
     }
 
   }
@@ -75,9 +127,9 @@ function Inventory() {
     fetchProducts()
   }, [])
 
-  useEffect(()=>{
-    fetchProducts(1,limit)
-  },[limit])
+  useEffect(() => {
+    fetchProducts(1, limit)
+  }, [limit])
 
 
   return (
@@ -90,7 +142,7 @@ function Inventory() {
 
         <div className='flex items-center col-span-2'>
           <button className='cursor-pointer font-semibold bg-green-500 text-white py-1 px-3 rounded-xl hover:scale-110 duration-500'
-          onClick={()=>setAddModal(true)}>Add Product</button>
+            onClick={() => setAddModal(true)}>Add Product</button>
         </div>
       </div>
 
@@ -99,7 +151,7 @@ function Inventory() {
 
         <LimitSelector limit={limit} setLimit={setLimit} />
 
-        <Table products={products} />
+        <Table products={products} handleDelete={handleDelete} />
 
         <div className='flex justify-center mt-6 gap-2'>
           <Pagination
@@ -122,18 +174,18 @@ function Inventory() {
               <label className='text-sm/6 font-medium text-gray-900'>Product name</label>
               <div className='mt-2'>
                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
-                    <input type="text" minLength={1} maxLength={100} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
-                    onChange={(e)=>setProductName(e.target.value)} />
+                  <input type="text" minLength={1} maxLength={100} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
+                    onChange={(e) => setProductName(e.target.value)} placeholder='Enter Product name' required />
                 </div>
               </div>
             </div>
-            
+
             <div>
               <label className='text-sm/6 font-medium text-gray-900'>Quantity</label>
               <div className='mt-2'>
                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
-                    <input type="number" min={0} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
-                    onChange={(e)=>setQuantity(e.target.value)} />
+                  <input type="number" min={0} defaultValue={0} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
+                    onChange={(e) => setQuantity(e.target.value)} />
                 </div>
               </div>
             </div>
@@ -144,7 +196,7 @@ function Inventory() {
                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
                   <div className="shrink-0 text-gray-500 select-none text-sm">฿</div>
                   <input type="number" min={1} max={1000000} defaultValue={1} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
-                  onChange={(e)=>setPrice(e.target.value)} />
+                    onChange={(e) => setPrice(e.target.value)} />
                 </div>
               </div>
             </div>
@@ -155,13 +207,13 @@ function Inventory() {
                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
                   <div className="shrink-0 text-gray-500 select-none text-sm">฿</div>
                   <input type="number" min={1} defaultValue={1} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
-                  onChange={(e)=>setCostPrice(e.target.value)} />
+                    onChange={(e) => setCostPrice(e.target.value)} />
                 </div>
               </div>
             </div>
 
             <div className='flex justify-center gap-x-2 mt-4'>
-              <button type='button' className='bg-red-500 text-white p-2 rounded-xl w-full hover:bg-red-600 hover:scale-105 duration-300 cursor-pointer' onClick={()=> setAddModal(false)}>Close</button>
+              <button type='button' className='bg-red-500 text-white p-2 rounded-xl w-full hover:bg-red-600 hover:scale-105 duration-300 cursor-pointer' onClick={() => setAddModal(false)}>Close</button>
               <button type='submit' className='bg-green-500 text-white p-2 rounded-xl w-full hover:bg-green-600 hover:scale-105 duration-300 cursor-pointer'>Add</button>
             </div>
 
