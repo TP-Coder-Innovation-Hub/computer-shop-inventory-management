@@ -31,7 +31,7 @@ function Table({ products = [] }) {
                             <tr key={item.id} className={idx % 2 === 0 ? 'bg-blue-50  ' : 'bg-blue-100'}>
                                 <td className="px-4 py-2 border border-gray-300">{item.id}</td>
                                 <td className="px-4 py-2 border border-gray-300 max-w-xs whitespace-nowrap overflow-hidden text-ellipsis">{item.product_name}</td>
-                                <td className="px-4 py-2 border border-gray-300 text-right">{(item.price).toFixed(2).toLocaleString('th-TH')}</td>
+                                <td className="px-4 py-2 border border-gray-300 text-right">{(item.price).toLocaleString('th-TH',{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                                 <td className="px-4 py-2 border border-gray-300 text-right">{(item.quantity).toLocaleString('th-TH')}</td>
                                 <td className="py-2 border border-gray-300 text-right">
                                     <div className='flex justify-center gap-x-2'>
