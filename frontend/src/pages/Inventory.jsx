@@ -117,7 +117,7 @@ function Inventory() {
 
   async function getUpdateData(productId) {
     try {
-      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory/30`)
+      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory/${productId}`)
       const data = res.data.product
       console.log(data)
       setProductName(data.product_name)
