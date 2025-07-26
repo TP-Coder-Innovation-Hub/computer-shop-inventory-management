@@ -23,6 +23,7 @@ function Inventory() {
   const [quantity, setQuantity] = useState(0)
   const [price, setPrice] = useState(1)
   const [costPrice, setCostPrice] = useState(1)
+  const [updateId, setUpdateId] = useState(0)
 
   const Toast = Swal.mixin({
     toast: true,
@@ -77,7 +78,7 @@ function Inventory() {
         title: res.data.message
       })
     } catch (err) {
-      console.log(err.response.data.message)
+      setProductDefaultValue()
       await Toast.fire({
         icon: 'error',
         title: err.response.data.message,
@@ -117,6 +118,7 @@ function Inventory() {
 
   async function getUpdateData(productId) {
     try {
+      setUpdateId(productId)
       const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory/${productId}`)
       const data = res.data.product
       console.log(data)
@@ -126,6 +128,7 @@ function Inventory() {
       setCostPrice(data.cost_price)
       setUpdateModal(true)
     } catch {
+      setProductDefaultValue()
       await Toast.fire({
         icon: 'error',
         title: err.response.data.message,
@@ -133,8 +136,28 @@ function Inventory() {
     }
   }
 
-  async function handleUpdateProduct() {
-
+  async function handleUpdateProduct(e) {
+    e.preventDefault()
+    try {
+      const productData = {
+        product_name: String(productName),
+        quantity: parseInt(quantity),
+        price: parseFloat(price),
+        cost_price: parseFloat(costPrice)
+      }
+      const res = await axios.put(`${String(import.meta.env.VITE_BACKEND)}/inventory/${updateId}`, productData)
+      setProductDefaultValue()
+      await Toast.fire({
+        icon: 'success',
+        title: res.data.message,
+      })
+    } catch (err) {
+      setProductDefaultValue()
+      await Toast.fire({
+        icon: 'error',
+        title: err.response.data.message,
+      })
+    }
   }
 
   function setProductDefaultValue() {
@@ -142,6 +165,7 @@ function Inventory() {
     setQuantity(0)
     setPrice(1)
     setCostPrice(1)
+    setUpdateId(0)
   }
 
   // คำนวณกลุ่มเลขหน้า
@@ -256,7 +280,6 @@ function Inventory() {
       <Modal isOpen={updateModal}>
         <form onSubmit={handleUpdateProduct}>
           <div className='flex flex-col gap-y-5'>
-
             <div>
               <label className='text-sm/6 font-medium text-gray-900'>Product name</label>
               <div className='mt-2'>
