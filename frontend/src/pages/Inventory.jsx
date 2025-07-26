@@ -145,6 +145,8 @@ function Inventory() {
       }
       const res = await axios.put(`${String(import.meta.env.VITE_BACKEND)}/inventory/${updateId}`, productData)
       setProductDefaultValue()
+      fetchProducts(activePage, limit)
+      setUpdateModal(false)
       await Toast.fire({
         icon: 'success',
         title: res.data.message,
