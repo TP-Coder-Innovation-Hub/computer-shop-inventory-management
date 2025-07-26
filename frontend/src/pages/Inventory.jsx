@@ -78,7 +78,6 @@ function Inventory() {
         title: res.data.message
       })
     } catch (err) {
-      setProductDefaultValue()
       await Toast.fire({
         icon: 'error',
         title: err.response.data.message,
@@ -128,7 +127,6 @@ function Inventory() {
       setCostPrice(data.cost_price)
       setUpdateModal(true)
     } catch {
-      setProductDefaultValue()
       await Toast.fire({
         icon: 'error',
         title: err.response.data.message,
