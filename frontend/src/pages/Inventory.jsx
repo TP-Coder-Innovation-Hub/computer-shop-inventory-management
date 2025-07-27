@@ -45,7 +45,6 @@ function Inventory() {
       setActivePage(res.data.pagination.activePage ?? page)
       setLimit(res.data.pagination.limit)
     } catch (err) {
-      console.log(err)
       await Toast.fire({
         icon: 'error',
         title: err.message
@@ -120,7 +119,6 @@ function Inventory() {
       setUpdateId(productId)
       const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory/${productId}`)
       const data = res.data.product
-      console.log(data)
       setProductName(data.product_name)
       setQuantity(data.quantity)
       setPrice(data.price)
