@@ -20,7 +20,6 @@ function Inventory() {
   const [addModal, setAddModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const [keyword, setKeyword] = useState('')
-  const [showErase, setShowErase] = useState(false)
 
   const [productName, setProductName] = useState('')
   const [quantity, setQuantity] = useState(0)
@@ -204,23 +203,15 @@ function Inventory() {
     fetchProducts(1, limit)
   }, [limit])
 
-  useEffect(() => {
-    const searchKeyword = keyword.trim()
-    if (searchKeyword.length > 0) {
-      setShowErase(true)
-    } else {
-      setShowErase(false)
-    }
-  }, [keyword])
-
-
   return (
     <MainLayout>
       <div className='grid grid-cols-12 gap-x-8'>
         <div className='flex justify-center col-span-10 gap-x-2 items-center'>
           <div className='flex items-center w-full border-1 border-gray-400 rounded-xl px-5 py-1'>
             <input className='w-full outline-none' type="text" placeholder='Search' value={keyword} onChange={(e) => setKeyword(e.target.value)} />
-            <button className={`ms-5 text-2xl hover:scale-110 hover:cursor-pointer ${showErase ? '' : 'hidden'}`} onClick={(e) => setKeyword('')} ><BsEraserFill /></button>
+            {keyword.length > 0 && (
+              <button className='ms-5 text-2xl hover:scale-110 hover:cursor-pointer' onClick={(e) => setKeyword('')} ><BsEraserFill /></button>
+            )}
           </div>
           <button className='bg-gray-300 rounded-full p-2 flex items-center hover:scale-110 duration-300 cursor-pointer' onClick={searchProduct}><IoSearch /></button>
         </div>
