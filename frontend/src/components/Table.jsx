@@ -1,7 +1,7 @@
 import React from 'react'
 import { MdModeEdit,MdDelete } from "react-icons/md";
 
-function Table({ products = [], handleDelete }) {
+function Table({ products = [], handleDelete, getUpdateData }) {
     return (
         <div>
             <table className="min-w-full shadow-md overflow-hidden">
@@ -35,7 +35,7 @@ function Table({ products = [], handleDelete }) {
                                 <td className="px-4 py-2 border border-gray-300 text-right">{(item.quantity).toLocaleString('th-TH')}</td>
                                 <td className="py-2 border border-gray-300 text-right">
                                     <div className='flex justify-center gap-x-2'>
-                                        <button className='flex items-center bg-yellow-500 hover:bg-yellow-700 cursor-pointer hover:scale-110 duration-200 px-5 py-2 rounded-xl text-white'><MdModeEdit /></button>
+                                        <button className='flex items-center bg-yellow-500 hover:bg-yellow-700 cursor-pointer hover:scale-110 duration-200 px-5 py-2 rounded-xl text-white' onClick={(e) => getUpdateData(item.id)}><MdModeEdit /></button>
                                         <button className='flex items-center bg-red-500 hover:bg-red-700 cursor-pointer hover:scale-110 duration-200 px-5 py-2 rounded-xl text-white' onClick={(e) => handleDelete(e, item.id)}><MdDelete /></button>
                                     </div>
                                 </td>

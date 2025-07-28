@@ -45,6 +45,25 @@ export const getProducts = async (req, res) => {
 
 }
 
+export const getProductById = async (req, res) => {
+    try {
+        const productId = Number(req.params.id)
+        const product = await Prisma.product.findUnique({
+            where: {
+                id: productId
+            }
+        })
+
+        if (!product) {
+            return res.status(404).json({ message: `product id ${productId} not found` })
+        }
+
+        return res.status(200).json({ product })
+    } catch (err) {
+        return res.status(500).json({ message: 'error getting products', error: err.message })
+    }
+}
+
 export const createProduct = async (req, res) => {
     const { product_name, quantity, price, cost_price } = req.body
 

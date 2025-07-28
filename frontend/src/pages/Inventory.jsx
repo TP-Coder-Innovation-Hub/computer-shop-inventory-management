@@ -17,11 +17,13 @@ function Inventory() {
   const [limit, setLimit] = useState(5)
   const [pageGroup, setPageGroup] = useState(0) // สำหรับแบ่งกลุ่มเลขหน้า
   const [addModal, setAddModal] = useState(false);
+  const [updateModal, setUpdateModal] = useState(false);
 
   const [productName, setProductName] = useState('')
   const [quantity, setQuantity] = useState(0)
   const [price, setPrice] = useState(1)
   const [costPrice, setCostPrice] = useState(1)
+  const [updateId, setUpdateId] = useState(0)
 
   const Toast = Swal.mixin({
     toast: true,
@@ -43,7 +45,6 @@ function Inventory() {
       setActivePage(res.data.pagination.activePage ?? page)
       setLimit(res.data.pagination.limit)
     } catch (err) {
-      console.log(err)
       await Toast.fire({
         icon: 'error',
         title: err.message
@@ -76,7 +77,6 @@ function Inventory() {
         title: res.data.message
       })
     } catch (err) {
-      console.log(err.response.data.message)
       await Toast.fire({
         icon: 'error',
         title: err.response.data.message,
@@ -99,7 +99,7 @@ function Inventory() {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(`${String(import.meta.env.VITE_BACKEND)}/inventory/${id}`)
-        fetchProducts(activePage, limit)      
+        fetchProducts(activePage, limit)
         await Toast.fire({
           icon: 'success',
           title: res.data.message,
@@ -114,11 +114,56 @@ function Inventory() {
 
   }
 
-  function setProductDefaultValue(){
+  async function getUpdateData(productId) {
+    try {
+      setUpdateId(productId)
+      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory/${productId}`)
+      const data = res.data.product
+      setProductName(data.product_name)
+      setQuantity(data.quantity)
+      setPrice(data.price)
+      setCostPrice(data.cost_price)
+      setUpdateModal(true)
+    } catch {
+      await Toast.fire({
+        icon: 'error',
+        title: err.response.data.message,
+      })
+    }
+  }
+
+  async function handleUpdateProduct(e) {
+    e.preventDefault()
+    try {
+      const productData = {
+        product_name: String(productName),
+        quantity: parseInt(quantity),
+        price: parseFloat(price),
+        cost_price: parseFloat(costPrice)
+      }
+      const res = await axios.put(`${String(import.meta.env.VITE_BACKEND)}/inventory/${updateId}`, productData)
+      setProductDefaultValue()
+      fetchProducts(activePage, limit)
+      setUpdateModal(false)
+      await Toast.fire({
+        icon: 'success',
+        title: res.data.message,
+      })
+    } catch (err) {
+      setProductDefaultValue()
+      await Toast.fire({
+        icon: 'error',
+        title: err.response.data.message,
+      })
+    }
+  }
+
+  function setProductDefaultValue() {
     setProductName('')
     setQuantity(0)
     setPrice(1)
     setCostPrice(1)
+    setUpdateId(0)
   }
 
   // คำนวณกลุ่มเลขหน้า
@@ -159,7 +204,7 @@ function Inventory() {
 
         <LimitSelector limit={limit} setLimit={setLimit} />
 
-        <Table products={products} handleDelete={handleDelete} />
+        <Table products={products} handleDelete={handleDelete} getUpdateData={getUpdateData} />
 
         <div className='flex justify-center mt-6 gap-2'>
           <Pagination
@@ -221,8 +266,63 @@ function Inventory() {
             </div>
 
             <div className='flex justify-center gap-x-2 mt-4'>
-              <button type='button' className='bg-red-500 text-white p-2 rounded-xl w-full hover:bg-red-600 hover:scale-105 duration-300 cursor-pointer' onClick={() => {setProductDefaultValue(); setAddModal(false)}}>Close</button>
+              <button type='button' className='bg-red-500 text-white p-2 rounded-xl w-full hover:bg-red-600 hover:scale-105 duration-300 cursor-pointer' onClick={() => { setProductDefaultValue(); setAddModal(false) }}>Close</button>
               <button type='submit' className='bg-green-500 text-white p-2 rounded-xl w-full hover:bg-green-600 hover:scale-105 duration-300 cursor-pointer'>Add</button>
+            </div>
+
+          </div>
+        </form>
+      </Modal>
+
+      {/* update product modal */}
+      <Modal isOpen={updateModal}>
+        <form onSubmit={handleUpdateProduct}>
+          <div className='flex flex-col gap-y-5'>
+            <div>
+              <label className='text-sm/6 font-medium text-gray-900'>Product name</label>
+              <div className='mt-2'>
+                <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
+                  <input type="text" minLength={1} maxLength={100} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
+                    onChange={(e) => setProductName(e.target.value)} placeholder='Enter Product name' value={productName} required />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className='text-sm/6 font-medium text-gray-900'>Quantity</label>
+              <div className='mt-2'>
+                <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
+                  <input type="number" min={0} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
+                    onChange={(e) => setQuantity(e.target.value)} value={quantity} />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm/6 font-medium text-gray-900">Price / Unit</label>
+              <div className="mt-2">
+                <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
+                  <div className="shrink-0 text-gray-500 select-none text-sm">฿</div>
+                  <input type="number" min={1} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
+                    onChange={(e) => setPrice(e.target.value)} value={price} />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm/6 font-medium text-gray-900">Cost Price / Unit</label>
+              <div className="mt-2">
+                <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
+                  <div className="shrink-0 text-gray-500 select-none text-sm">฿</div>
+                  <input type="number" min={1} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
+                    onChange={(e) => setCostPrice(e.target.value)} value={costPrice} />
+                </div>
+              </div>
+            </div>
+
+            <div className='flex justify-center gap-x-2 mt-4'>
+              <button type='button' className='bg-red-500 text-white p-2 rounded-xl w-full hover:bg-red-600 hover:scale-105 duration-300 cursor-pointer' onClick={() => { setProductDefaultValue(); setUpdateModal(false) }}>Close</button>
+              <button type='submit' className='bg-green-500 text-white p-2 rounded-xl w-full hover:bg-green-600 hover:scale-105 duration-300 cursor-pointer'>Update</button>
             </div>
 
           </div>
