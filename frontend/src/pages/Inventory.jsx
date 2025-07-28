@@ -18,6 +18,7 @@ function Inventory() {
   const [pageGroup, setPageGroup] = useState(0) // สำหรับแบ่งกลุ่มเลขหน้า
   const [addModal, setAddModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [keyword, setKeyword] = useState('')
 
   const [productName, setProductName] = useState('')
   const [quantity, setQuantity] = useState(0)
@@ -166,6 +167,21 @@ function Inventory() {
     setUpdateId(0)
   }
 
+  async function searchProduct(e) {
+    e.preventDefault()
+    const searchKeyword = keyword.trim()
+    if (searchKeyword) {
+      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory?limit=${limit}&search=${searchKeyword}`)
+      setProducts(res.data.data)
+      setPageSize(res.data.pagination.totalPage)
+      setActivePage(res.data.pagination.activePage ?? 1)
+      setLimit(res.data.pagination.limit)
+    } else {
+      fetchProducts()
+    }
+
+  }
+
   // คำนวณกลุ่มเลขหน้า
   const pageButtons = [];
   const groupSize = 5;
@@ -181,7 +197,12 @@ function Inventory() {
   }, [])
 
   useEffect(() => {
-    fetchProducts(1, limit)
+    const searchKeyword = keyword.trim()
+    if (searchKeyword) {
+      searchProduct({ preventDefault: () => { } })
+    } else {
+      fetchProducts(1, limit)
+    }
   }, [limit])
 
 
@@ -189,8 +210,8 @@ function Inventory() {
     <MainLayout>
       <div className='grid grid-cols-12 gap-x-8'>
         <div className='flex justify-center col-span-10 gap-x-2'>
-          <input className='flex items-center w-full border-1 border-gray-400 rounded-xl px-5 py-1' type="text" name="" placeholder='Search' id="" />
-          <button className='bg-gray-300 rounded-full p-2 flex items-center hover:scale-110 duration-300 cursor-pointer'><IoSearch /></button>
+          <input className='flex items-center w-full border-1 border-gray-400 rounded-xl px-5 py-1' type="text" placeholder='Search' onChange={(e) => setKeyword(e.target.value)} />
+          <button className='bg-gray-300 rounded-full p-2 flex items-center hover:scale-110 duration-300 cursor-pointer' onClick={searchProduct}><IoSearch /></button>
         </div>
 
         <div className='flex items-center col-span-2'>
