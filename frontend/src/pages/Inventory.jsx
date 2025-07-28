@@ -42,7 +42,9 @@ function Inventory() {
 
   async function fetchProducts(page = 1, limit = 5) {
     try {
-      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory?page=${page}&limit=${limit}`)
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND}/inventory`, {
+        params: { page, limit, search: keyword }
+      });
       setProducts(res.data.data)
       setPageSize(res.data.pagination.totalPage)
       setActivePage(res.data.pagination.activePage ?? page)
@@ -199,12 +201,7 @@ function Inventory() {
   }, [])
 
   useEffect(() => {
-    const searchKeyword = keyword.trim()
-    if (searchKeyword) {
-      searchProduct({ preventDefault: () => { } })
-    } else {
-      fetchProducts(1, limit)
-    }
+    fetchProducts(1, limit)
   }, [limit])
 
   useEffect(() => {
