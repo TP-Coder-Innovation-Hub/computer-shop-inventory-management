@@ -1,5 +1,5 @@
 import React from 'react'
-import { MdModeEdit,MdDelete } from "react-icons/md";
+import { MdModeEdit, MdDelete } from "react-icons/md";
 
 function Table({ products = [], handleDelete, getUpdateData }) {
     return (
@@ -24,7 +24,7 @@ function Table({ products = [], handleDelete, getUpdateData }) {
                 <tbody>
                     {products.length === 0 ? (
                         <tr>
-                            <td colSpan={4} className="text-center py-6 text-gray-400">Product Data Empty</td>
+                            <td colSpan={4} className="text-center py-6 text-gray-400">Product not found</td>
                         </tr>
                     ) : (
                         products.map((item, idx) => (

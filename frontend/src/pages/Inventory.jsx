@@ -8,6 +8,7 @@ import { useState } from 'react';
 import LimitSelector from '../components/LimitSelector';
 import Modal from '../components/Modal';
 import Swal from 'sweetalert2'
+import { BsEraserFill } from "react-icons/bs";
 
 function Inventory() {
 
@@ -18,6 +19,7 @@ function Inventory() {
   const [pageGroup, setPageGroup] = useState(0) // สำหรับแบ่งกลุ่มเลขหน้า
   const [addModal, setAddModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [keyword, setKeyword] = useState('')
 
   const [productName, setProductName] = useState('')
   const [quantity, setQuantity] = useState(0)
@@ -39,7 +41,9 @@ function Inventory() {
 
   async function fetchProducts(page = 1, limit = 5) {
     try {
-      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory?page=${page}&limit=${limit}`)
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND}/inventory`, {
+        params: { page, limit, search: keyword }
+      });
       setProducts(res.data.data)
       setPageSize(res.data.pagination.totalPage)
       setActivePage(res.data.pagination.activePage ?? page)
@@ -166,6 +170,21 @@ function Inventory() {
     setUpdateId(0)
   }
 
+  async function searchProduct(e) {
+    e.preventDefault()
+    const searchKeyword = keyword.trim()
+    if (searchKeyword) {
+      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory?limit=${limit}&search=${searchKeyword}`)
+      setProducts(res.data.data)
+      setPageSize(res.data.pagination.totalPage)
+      setActivePage(res.data.pagination.activePage ?? 1)
+      setLimit(res.data.pagination.limit)
+    } else {
+      fetchProducts()
+    }
+
+  }
+
   // คำนวณกลุ่มเลขหน้า
   const pageButtons = [];
   const groupSize = 5;
@@ -184,13 +203,17 @@ function Inventory() {
     fetchProducts(1, limit)
   }, [limit])
 
-
   return (
     <MainLayout>
       <div className='grid grid-cols-12 gap-x-8'>
-        <div className='flex justify-center col-span-10 gap-x-2'>
-          <input className='flex items-center w-full border-1 border-gray-400 rounded-xl px-5 py-1' type="text" name="" placeholder='Search' id="" />
-          <button className='bg-gray-300 rounded-full p-2 flex items-center hover:scale-110 duration-300 cursor-pointer'><IoSearch /></button>
+        <div className='flex justify-center col-span-10 gap-x-2 items-center'>
+          <div className='flex items-center w-full border-1 border-gray-400 rounded-xl px-5 py-1'>
+            <input className='w-full outline-none' type="text" placeholder='Search' value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+            {keyword.length > 0 && (
+              <button className='ms-5 text-2xl hover:scale-110 hover:cursor-pointer' onClick={(e) => setKeyword('')} ><BsEraserFill /></button>
+            )}
+          </div>
+          <button className='bg-gray-300 rounded-full p-2 flex items-center hover:scale-110 duration-300 cursor-pointer' onClick={searchProduct}><IoSearch /></button>
         </div>
 
         <div className='flex items-center col-span-2'>
@@ -328,7 +351,7 @@ function Inventory() {
           </div>
         </form>
       </Modal>
-    </MainLayout>
+    </MainLayout >
   )
 }
 
