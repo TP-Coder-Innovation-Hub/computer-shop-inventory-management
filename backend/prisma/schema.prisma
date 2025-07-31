@@ -14,23 +14,31 @@ datasource db {
 }
 
 model Product {
-  id           Int      @id @default(autoincrement())
-  product_name String   @db.VarChar(100)
-  quantity     Int      @default(0) @db.UnsignedInt
+  id           Int         @id @default(autoincrement())
+  product_name String      @db.VarChar(100)
+  quantity     Int         @default(0) @db.UnsignedInt
   price        Float
   cost_price   Float
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
-  Order        Order[]
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  OrderItem    OrderItem[]
 }
 
 model Order {
-  id            Int      @id @default(autoincrement())
-  product       Product  @relation(fields: [product_id], references: [id])
-  product_id    Int
-  quantity      Int      @default(1) @db.UnsignedInt
-  total_price   Float
-  customer_name String?  @db.VarChar(100)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id            Int         @id @default(autoincrement())
+  customer_name String?     @db.VarChar(100)
+  order_price   Float
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  OrderItem     OrderItem[]
+}
+
+model OrderItem {
+  id          Int     @id @default(autoincrement())
+  order       Order   @relation(fields: [order_id], references: [id])
+  order_id    Int
+  product     Product @relation(fields: [product_id], references: [id])
+  product_id  Int
+  quantity    Int     @default(1) @db.UnsignedInt
+  total_price Float
 }
