@@ -1,0 +1,58 @@
+import { Prisma } from "../config/prisma.js"
+
+export const createOrder = async (req, res) => {
+    try {
+        const { customer_name, items } = req.body
+
+        let totalOrderPrice = 0
+
+        const orderItems = await Promise.all(items.map(async (item) => {
+            const product = await Prisma.product.findUnique({
+                where: { id: item.product_id }
+            })
+
+            if (!product) throw new Error(`Product ID ${item.product_id} not found`)
+
+            if (product.quantity < item.quantity) {
+                throw new Error(`${product.product_name} is not enough stock left`)
+            }
+
+            const total_price = product.price * item.quantity
+            totalOrderPrice += total_price
+
+            return {
+                product_id: item.product_id,
+                quantity: item.quantity,
+                total_price: total_price
+            }
+        }))
+
+        for (const item of orderItems) {
+            await Prisma.product.update({
+                where: { id: item.product_id },
+                data: {
+                    quantity: {
+                        decrement: item.quantity
+                    }
+                }
+            })
+        }
+
+        const order = await Prisma.order.create({
+            data: {
+                customer_name,
+                order_price: totalOrderPrice,
+                OrderItem: {
+                    create: orderItems
+                }
+            },
+            include: {
+                OrderItem: true
+            }
+        })
+
+        res.status(201).json({ message: 'Order created success', order })
+    } catch (err) {
+        res.status(500).json({ message: 'Error creating order', error: err.message })
+    }
+}
