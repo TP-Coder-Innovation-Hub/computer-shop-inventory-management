@@ -1,28 +1,32 @@
 import { Prisma } from "../config/prisma.js"
 
+const checkOrderItem = async (item) => {
+    const product = await Prisma.product.findUnique({
+        where: { id: item.product_id }
+    })
+
+    if (!product) {
+        throw new Error(`Product ID ${item.product_id} not found`)
+    }
+
+    if (product.quantity < item.quantity) {
+        throw new Error(`${product.product_name} is not enough stock left`)
+    }
+
+    const total_price = product.price * item.quantity
+
+    return {
+        product_id: item.product_id,
+        quantity: item.quantity,
+        total_price: total_price
+    }
+}
+
 export const createOrder = async (req, res) => {
     try {
         const { customer_name, items } = req.body
 
-        const orderItems = await Promise.all(items.map(async (item) => {
-            const product = await Prisma.product.findUnique({
-                where: { id: item.product_id }
-            })
-
-            if (!product) throw new Error(`Product ID ${item.product_id} not found`)
-
-            if (product.quantity < item.quantity) {
-                throw new Error(`${product.product_name} is not enough stock left`)
-            }
-
-            const total_price = product.price * item.quantity
-
-            return {
-                product_id: item.product_id,
-                quantity: item.quantity,
-                total_price: total_price
-            }
-        }))
+        const orderItems = await Promise.all(items.map(checkOrderItem))
 
         for (const item of orderItems) {
             await Prisma.product.update({
