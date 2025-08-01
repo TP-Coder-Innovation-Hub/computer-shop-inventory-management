@@ -27,7 +27,6 @@ model Product {
 model Order {
   id            Int         @id @default(autoincrement())
   customer_name String?     @db.VarChar(100)
-  order_price   Float
   created_at    DateTime    @default(now())
   updated_at    DateTime    @updatedAt
   OrderItem     OrderItem[]

@@ -4,8 +4,6 @@ export const createOrder = async (req, res) => {
     try {
         const { customer_name, items } = req.body
 
-        let totalOrderPrice = 0
-
         const orderItems = await Promise.all(items.map(async (item) => {
             const product = await Prisma.product.findUnique({
                 where: { id: item.product_id }
@@ -18,7 +16,6 @@ export const createOrder = async (req, res) => {
             }
 
             const total_price = product.price * item.quantity
-            totalOrderPrice += total_price
 
             return {
                 product_id: item.product_id,
@@ -41,7 +38,6 @@ export const createOrder = async (req, res) => {
         const order = await Prisma.order.create({
             data: {
                 customer_name,
-                order_price: totalOrderPrice,
                 OrderItem: {
                     create: orderItems
                 }
