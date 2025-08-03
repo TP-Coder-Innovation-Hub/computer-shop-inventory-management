@@ -24,7 +24,7 @@ const checkOrderItem = async (item) => {
 
 export const createOrder = async (req, res) => {
     try {
-        const { customer_name, items } = req.body
+        const { user_id, items } = req.body
 
         const orderItems = await Promise.all(items.map(checkOrderItem))
 
@@ -41,7 +41,7 @@ export const createOrder = async (req, res) => {
 
         const order = await Prisma.order.create({
             data: {
-                customer_name,
+                user_id: user_id,
                 OrderItem: {
                     create: orderItems
                 }
