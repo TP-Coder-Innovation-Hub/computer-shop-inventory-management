@@ -13,12 +13,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum EnumUserRole {
+  ADMIN
+  USER
+}
+
 model Product {
-  id Int @id @default(autoincrement())
-  product_name String @db.VarChar(100)
-  quantity Int @db.UnsignedInt @default(0)
-  price Float
-  cost_price Float
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id           Int         @id @default(autoincrement())
+  product_name String      @db.VarChar(100)
+  quantity     Int         @default(0) @db.UnsignedInt
+  price        Float
+  cost_price   Float
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  OrderItem    OrderItem[]
+}
+
+model Order {
+  id         Int         @id @default(autoincrement())
+  user       User        @relation(fields: [user_id], references: [id])
+  user_id    Int
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  OrderItem  OrderItem[]
+}
+
+model OrderItem {
+  id          Int     @id @default(autoincrement())
+  order       Order   @relation(fields: [order_id], references: [id])
+  order_id    Int
+  product     Product @relation(fields: [product_id], references: [id])
+  product_id  Int
+  quantity    Int     @default(1) @db.UnsignedInt
+  total_price Float
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  username   String       @unique @db.VarChar(50)
+  email      String       @unique @db.VarChar(100)
+  password   String       @db.VarChar(255)
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+  role       EnumUserRole @default(USER)
+  Order      Order[]
 }
