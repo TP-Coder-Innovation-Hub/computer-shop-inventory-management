@@ -56,7 +56,6 @@ export const login = async (req, res) => {
         let payload = {
             id: existUser.id,
             username: existUser.username,
-            role: existUser.role
         }
 
         const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: '1h' })
@@ -72,4 +71,15 @@ export const login = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: 'Login fail', error: err.message })
     }
+}
+
+export const getUserRole = async (id) => {
+    const userId = parseInt(id)
+
+    const user = await Prisma.user.findFirst({
+        where: { id: userId },
+        select: { role: true }
+    })
+
+    return user.role
 }

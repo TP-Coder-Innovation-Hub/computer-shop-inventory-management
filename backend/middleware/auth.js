@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
+import { getUserRole } from '../controllers/auth-controller.js';
 
-export const authentication = (req, res, next) => {
+export const authentication = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
@@ -10,6 +11,8 @@ export const authentication = (req, res, next) => {
     try {
         const decode = jwt.verify(token, String(process.env.JWT_SECRET));
         req.user = decode;
+        req.user.role = await getUserRole(req.user.id)
+
         next();
     } catch (err) {
         return res.status(500).json({ message: 'Authentication error', error: err });
