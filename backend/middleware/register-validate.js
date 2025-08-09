@@ -1,0 +1,17 @@
+import Joi from 'joi'
+
+const productSchema = Joi.object({
+    username: Joi.string().min(1).max(50).required(),
+    email: Joi.string().min(1).max(100).required(),
+    password: Joi.string().min(1).max(255).required(),
+})
+
+export const validateRegister = (req, res, next) => {
+    const { error } = productSchema.validate(req.body)
+
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message })
+    }
+
+    next()
+}
