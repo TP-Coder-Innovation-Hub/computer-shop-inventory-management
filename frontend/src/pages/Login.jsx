@@ -29,8 +29,11 @@ export default function Login() {
 
             const data = { email: email, password: password }
             const res = await axios.post(`${String(import.meta.env.VITE_BACKEND)}/login`, data, { withCredentials: true })
-            console.log(res)
-            navigate("/inventory")
+            if (res.data.role === 'ADMIN') {
+                navigate('/inventory')
+            } else {
+                navigate('/user')
+            }
         } catch (err) {
             const msg = err.response?.data?.message || err.message
             await Toast.fire({
