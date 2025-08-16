@@ -42,7 +42,8 @@ function Inventory() {
   async function fetchProducts(page = 1, limit = 5) {
     try {
       const res = await axios.get(`${import.meta.env.VITE_BACKEND}/inventory`, {
-        params: { page, limit, search: keyword }
+        params: { page, limit, search: keyword },
+        withCredentials: true
       });
       setProducts(res.data.data)
       setPageSize(res.data.pagination.totalPage)
@@ -72,7 +73,7 @@ function Inventory() {
     }
 
     try {
-      const res = await axios.post(`${String(import.meta.env.VITE_BACKEND)}/inventory`, productData)
+      const res = await axios.post(`${String(import.meta.env.VITE_BACKEND)}/inventory`, productData, { withCredentials: true })
       fetchProducts(activePage, limit)
       setAddModal(false)
       setProductDefaultValue()
@@ -102,7 +103,7 @@ function Inventory() {
 
     if (result.isConfirmed) {
       try {
-        const res = await axios.delete(`${String(import.meta.env.VITE_BACKEND)}/inventory/${id}`)
+        const res = await axios.delete(`${String(import.meta.env.VITE_BACKEND)}/inventory/${id}`, { withCredentials: true })
         fetchProducts(activePage, limit)
         await Toast.fire({
           icon: 'success',
@@ -121,7 +122,7 @@ function Inventory() {
   async function getUpdateData(productId) {
     try {
       setUpdateId(productId)
-      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory/${productId}`)
+      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory/${productId}`, { withCredentials: true })
       const data = res.data.product
       setProductName(data.product_name)
       setQuantity(data.quantity)
@@ -145,7 +146,7 @@ function Inventory() {
         price: parseFloat(price),
         cost_price: parseFloat(costPrice)
       }
-      const res = await axios.put(`${String(import.meta.env.VITE_BACKEND)}/inventory/${updateId}`, productData)
+      const res = await axios.put(`${String(import.meta.env.VITE_BACKEND)}/inventory/${updateId}`, productData, { withCredentials: true })
       setProductDefaultValue()
       fetchProducts(activePage, limit)
       setUpdateModal(false)
@@ -174,7 +175,7 @@ function Inventory() {
     e.preventDefault()
     const searchKeyword = keyword.trim()
     if (searchKeyword) {
-      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory?limit=${limit}&search=${searchKeyword}`)
+      const res = await axios.get(`${String(import.meta.env.VITE_BACKEND)}/inventory?limit=${limit}&search=${searchKeyword}`, { withCredentials: true })
       setProducts(res.data.data)
       setPageSize(res.data.pagination.totalPage)
       setActivePage(res.data.pagination.activePage ?? 1)
