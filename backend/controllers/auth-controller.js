@@ -84,10 +84,6 @@ export const getUserRole = async (id) => {
     return user.role
 }
 
-export const authCheck = async (req, res) => {
-    res.status(200).json({ message: 'already login' })
-}
-
 export const logout = async (req, res) => {
     try {
         res.clearCookie('token', {
