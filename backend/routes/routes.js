@@ -26,6 +26,5 @@ router.post('/order', authentication, createOrder)
 router.post('/register', validateRegister, register)
 router.post('/login', validateLogin, login)
 router.get('/logout', authentication, logout)
-router.get('/check-auth', authentication, authCheck)
 
 export default router
