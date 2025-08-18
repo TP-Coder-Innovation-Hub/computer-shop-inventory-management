@@ -10,7 +10,7 @@ export default function ProtectedRoute() {
     async function checkAuth() {
         try {
             const res = await axios.get(
-                `${import.meta.env.VITE_BACKEND}/check-auth`,
+                `${import.meta.env.VITE_BACKEND}/inventory`,
                 { withCredentials: true }
             )
             if (res.status === 200) {
