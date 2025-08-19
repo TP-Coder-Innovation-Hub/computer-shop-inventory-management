@@ -1,6 +1,7 @@
 
+import axios from 'axios';
 import React from 'react';
-import { Link, useLocation } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 
 const navItems = [
     { name: 'Dashboard', icon: '🏠', path: '/dashboard' },
@@ -10,7 +11,18 @@ const navItems = [
 ];
 
 function Sidebar() {
-  const location = useLocation();
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    async function handleLogout() {
+        try {
+
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND}/logout`, { withCredentials: true })
+            navigate('/login')
+        } catch (err) {
+            console.error('logout error:', err)
+        }
+    }
 
     return (
         <nav className="col-span-2 h-screen w-full bg-gray-100/50 flex flex-col items-center justify-center border-r border-gray-200">
@@ -27,6 +39,13 @@ function Sidebar() {
                         </li>
                     </Link>
                 ))}
+
+                <li onClick={handleLogout}
+                    className={`flex items-center gap-5 rounded-xl shadow-md/50 px-5 py-3 font-semibold text-black hover:scale-110 hover:bg-orange-100 transition-all duration-400 cursor-pointer group`}
+                >
+                    <span className="text-2xl group-hover:scale-150 transition-transform duration-400">🚪</span>
+                    <span className="text-lg group-hover:transition-colors duration-400">Logout</span>
+                </li>
             </ul>
         </nav>
     );

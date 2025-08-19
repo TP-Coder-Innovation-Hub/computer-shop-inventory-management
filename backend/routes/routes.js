@@ -2,7 +2,7 @@ import express from 'express'
 import { createProduct, deleteProduct, getProducts, getProductById, updateProduct } from '../controllers/inventory-controller.js'
 import { validateProduct } from '../middleware/inventory-validate.js'
 import { createOrder } from '../controllers/order-controller.js'
-import { login, register } from '../controllers/auth-controller.js'
+import { authCheck, login, logout, register } from '../controllers/auth-controller.js'
 import { authentication } from '../middleware/auth.js'
 import { validateRegister } from '../middleware/register-validate.js'
 import { validateLogin } from '../middleware/login-validate.js'
@@ -25,5 +25,6 @@ router.post('/order', authentication, createOrder)
 // authentication routes
 router.post('/register', validateRegister, register)
 router.post('/login', validateLogin, login)
+router.get('/logout', authentication, logout)
 
 export default router

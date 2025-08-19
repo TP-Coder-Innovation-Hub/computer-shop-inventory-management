@@ -83,3 +83,15 @@ export const getUserRole = async (id) => {
 
     return user.role
 }
+
+export const logout = async (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            sameSite: 'strict',
+        })
+        return res.json({ message: 'Logout success' })
+    } catch (err) {
+        return res.status(500).json({ message: 'Logout fail', error: err.message })
+    }
+}
