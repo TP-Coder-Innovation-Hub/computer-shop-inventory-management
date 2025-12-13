@@ -65,7 +65,8 @@ export const getProductById = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
-    const { product_name, quantity, price, cost_price } = req.body
+    const { product_name, price, cost_price } = req.body
+    const quantity = 0;
 
     try {
         const newProduct = await Prisma.product.create({
@@ -85,14 +86,13 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
     const { id } = req.params
-    const { product_name, quantity, price, cost_price } = req.body
+    const { product_name, price, cost_price } = req.body
 
     try {
         const updateProduct = await Prisma.product.update({
             where: { id: Number(id) },
             data: {
                 product_name: String(product_name),
-                quantity: Number(quantity),
                 price: parseFloat(price),
                 cost_price: parseFloat(cost_price)
             }

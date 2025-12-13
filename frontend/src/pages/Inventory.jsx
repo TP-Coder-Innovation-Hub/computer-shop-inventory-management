@@ -258,16 +258,6 @@ function Inventory() {
             </div>
 
             <div>
-              <label className='text-sm/6 font-medium text-gray-900'>Quantity</label>
-              <div className='mt-2'>
-                <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
-                  <input type="number" min={0} defaultValue={0} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
-                    onChange={(e) => setQuantity(e.target.value)} />
-                </div>
-              </div>
-            </div>
-
-            <div>
               <label className="text-sm/6 font-medium text-gray-900">Price / Unit</label>
               <div className="mt-2">
                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
@@ -308,16 +298,6 @@ function Inventory() {
                 <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
                   <input type="text" minLength={1} maxLength={100} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
                     onChange={(e) => setProductName(e.target.value)} placeholder='Enter Product name' value={productName} required />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className='text-sm/6 font-medium text-gray-900'>Quantity</label>
-              <div className='mt-2'>
-                <div className="flex items-center rounded-md bg-white pl-3 outline-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:outline-indigo-600">
-                  <input type="number" min={0} className="block min-w-0 grow py-1.5 pr-3 pl-1 placeholder:text-gray-400 focus:outline-none"
-                    onChange={(e) => setQuantity(e.target.value)} value={quantity} />
                 </div>
               </div>
             </div>
