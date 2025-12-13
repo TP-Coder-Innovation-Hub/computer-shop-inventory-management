@@ -1,4 +1,4 @@
-# Initial warehouse/inventory management system
+# Initial inventory management system
 
 ## Context
 
@@ -6,10 +6,10 @@ Currently, we are managing stock by using paper. It has been effective for now. 
 
 For example
 
-- We need to find the product name on paper for checking the current amount of product.
+- We need to find the product name on paper for checking the current quantity of product.
 - Need to calculate income, outcome, and profit by hand. And sometimes we are losing track.
 
-That's being said, I would like to introduce system to help manage our warehouse to reduce & minimize error factors.
+That's being said, I would like to introduce system to help manage our inventory to reduce & minimize error factors.
 
 ## Decision
 
@@ -26,52 +26,6 @@ That's being said, I would like to introduce system to help manage our warehouse
 
 ## Design
 
-Database ER daigram
+Receive/Issue product flowchart
 
-![ER-Daigram](../images/er_daigram_warehouse_management.png)
-
-## Wireframe
-
-#### Dashboard page
-
-![dashboard](../images/dashboard.png)
-
-#### Inventory page
-
-![inventory](../images/Inventory.png)
-
-- seller can add product
-
-![inventory-add](../images/add_product.png)
-
-- seller can edit product
-
-![inventory-edit](../images/edit_product.png)
-
-#### Category page
-
-![category](../images/Category.png)
-
-- Seller can add category for product.
-
-![category-add](../images/add_category.png)
-
-- seller can edit catefory name
-
-![category-edit](../images/edit_category.png)
-
-#### Order page
-
-![Order](../images/Order.png)
-
-- Seller can add orders.
-
-![Order-add](../images/add_order.png)
-
-- If the order status is draft, the items in the order can be edited.
-
-![Order-edit](../images/edit_order.png)
-
-- If the order status is complete, seller cannot edit it, only view order detail
-
-![Order-view](../images/view_order.png)
+![Receive/Issue-Goods](../images/receive-issue-process.png)
