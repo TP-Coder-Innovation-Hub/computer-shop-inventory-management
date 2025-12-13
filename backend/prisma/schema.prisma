@@ -15,24 +15,23 @@ datasource db {
 
 enum EnumUserRole {
   ADMIN
-  USER
+  STAFF
 }
 
 model Product {
-  id           Int         @id @default(autoincrement())
-  product_name String      @db.VarChar(100)
-  quantity     Int         @default(0) @db.UnsignedInt
+  id           Int           @id @default(autoincrement())
+  product_name String        @db.VarChar(100)
+  quantity     Int           @default(0) @db.UnsignedInt
   price        Float
   cost_price   Float
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
   OrderItem    OrderItem[]
+  Transaction  Transaction[]
 }
 
 model Order {
   id         Int         @id @default(autoincrement())
-  user       User        @relation(fields: [user_id], references: [id])
-  user_id    Int
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
   OrderItem  OrderItem[]
@@ -55,6 +54,21 @@ model User {
   password   String       @db.VarChar(255)
   created_at DateTime     @default(now())
   updated_at DateTime     @updatedAt
-  role       EnumUserRole @default(USER)
-  Order      Order[]
+  role       EnumUserRole @default(STAFF)
+}
+
+enum EnumTransactionType {
+  INCREASE
+  DECREASE
+}
+
+model Transaction {
+  id         Int                 @id @default(autoincrement())
+  product    Product             @relation(fields: [product_id], references: [id])
+  product_id Int
+  type       EnumTransactionType
+  quantity   Int                 @db.UnsignedInt
+  note       String?             @db.VarChar(255)
+  created_at DateTime            @default(now())
+  updated_at DateTime            @updatedAt
 }
