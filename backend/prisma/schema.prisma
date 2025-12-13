@@ -68,7 +68,6 @@ model Transaction {
   product_id Int
   type       EnumTransactionType
   quantity   Int                 @db.UnsignedInt
-  note       String?             @db.VarChar(255)
   created_at DateTime            @default(now())
   updated_at DateTime            @updatedAt
 }
