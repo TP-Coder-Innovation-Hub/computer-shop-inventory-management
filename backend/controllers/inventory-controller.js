@@ -115,3 +115,29 @@ export const deleteProduct = async (req, res) => {
         res.status(500).json({ message: 'Error deleting product', error: err.message })
     }
 }
+
+export const receiveProduct = async (req, res) => {
+    const { id, quantity } = req.body
+    try {
+        await Prisma.$transaction(async (tx) => {
+            await tx.product.update({
+                where: { id: Number(id) },
+                data: {
+                    quantity: { increment: Number(quantity) }
+                }
+            })
+
+            await tx.transaction.create({
+                data: {
+                    product_id: Number(id),
+                    type: 'INCREASE',
+                    quantity: Number(quantity)
+                }
+            })
+        })
+
+        res.status(200).json({ message: 'Product updated successfully' })
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating quantity', error: err.message })
+    }
+}
