@@ -117,7 +117,8 @@ export const deleteProduct = async (req, res) => {
 }
 
 export const receiveProduct = async (req, res) => {
-    const { id, quantity } = req.body
+    const { id } = req.params
+    const { quantity } = req.body
     try {
         await Prisma.$transaction(async (tx) => {
             await tx.product.update({
