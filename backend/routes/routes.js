@@ -19,7 +19,7 @@ router.put('/inventory/:id', authentication, isAdmin, validateProduct, updatePro
 router.delete('/inventory/:id', authentication, isAdmin, deleteProduct)
 
 // product quantity update routes
-router.put('/product/increase/:id', authentication, validateQuantity, receiveProduct)
+router.patch('/product/:id/increase', authentication, validateQuantity, receiveProduct)
 
 // order routes
 router.post('/order', authentication, createOrder)
