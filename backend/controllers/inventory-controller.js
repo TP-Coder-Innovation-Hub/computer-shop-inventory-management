@@ -142,3 +142,28 @@ export const receiveProduct = async (req, res) => {
         res.status(500).json({ message: 'Error updating quantity', error: err.message })
     }
 }
+
+export const deductProduct = async (req, res) => {
+    const { id } = req.params
+    const { quantity } = req.body
+    try {
+        await Prisma.$transaction(async (tx) => {
+            await tx.product.update({
+                where: { id: Number(id) },
+                data: {
+                    quantity: { decrement: Number(quantity) }
+                }
+            })
+
+            await tx.transaction.create({
+                data: {
+                    product_id: Number(id),
+                    type: 'DECREASE',
+                    quantity: Number(quantity)
+                }
+            })
+        })
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating quantity', error: err.message })
+    }
+}

@@ -1,5 +1,5 @@
 import express from 'express'
-import { createProduct, deleteProduct, getProducts, getProductById, updateProduct, receiveProduct } from '../controllers/inventory-controller.js'
+import { createProduct, deleteProduct, getProducts, getProductById, updateProduct, receiveProduct, deductProduct } from '../controllers/inventory-controller.js'
 import { validateProduct } from '../middleware/inventory-validate.js'
 import { createOrder } from '../controllers/order-controller.js'
 import { login, logout, register } from '../controllers/auth-controller.js'
@@ -20,6 +20,7 @@ router.delete('/inventory/:id', authentication, isAdmin, deleteProduct)
 
 // product quantity update routes
 router.patch('/product/:id/increase', authentication, validateQuantity, receiveProduct)
+router.patch('/product/:id/decrease', authentication, validateQuantity, deductProduct)
 
 // order routes
 router.post('/order', authentication, createOrder)
