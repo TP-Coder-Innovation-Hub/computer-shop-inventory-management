@@ -163,6 +163,7 @@ export const deductProduct = async (req, res) => {
                 }
             })
         })
+        res.status(200).json({ message: 'Product updated successfully' })
     } catch (err) {
         res.status(500).json({ message: 'Error updating quantity', error: err.message })
     }
