@@ -1,5 +1,7 @@
 import React from 'react'
 import { MdModeEdit, MdDelete } from "react-icons/md";
+import { CiInboxIn, CiInboxOut } from "react-icons/ci";
+import { Link } from 'react-router';
 
 function Table({ products = [], handleDelete, getUpdateData }) {
     return (
@@ -35,6 +37,8 @@ function Table({ products = [], handleDelete, getUpdateData }) {
                                 <td className="px-4 py-2 border border-gray-300 text-right">{(item.quantity).toLocaleString('th-TH')}</td>
                                 <td className="py-2 border border-gray-300 text-right">
                                     <div className='flex justify-center gap-x-2'>
+                                        <Link to={`../receive/${item.id}`} className='flex items-center bg-green-500 hover:bg-green-700 cursor-pointer hover:scale-110 duration-200 px-5 py-2 rounded-xl text-white'><CiInboxIn strokeWidth={2} /></Link>
+                                        <Link to={`../deduct/${item.id}`} className='flex items-center bg-blue-500 hover:bg-blue-700 cursor-pointer hover:scale-110 duration-200 px-5 py-2 rounded-xl text-white'><CiInboxOut strokeWidth={2} /></Link>
                                         <button className='flex items-center bg-yellow-500 hover:bg-yellow-700 cursor-pointer hover:scale-110 duration-200 px-5 py-2 rounded-xl text-white' onClick={(e) => getUpdateData(item.id)}><MdModeEdit /></button>
                                         <button className='flex items-center bg-red-500 hover:bg-red-700 cursor-pointer hover:scale-110 duration-200 px-5 py-2 rounded-xl text-white' onClick={(e) => handleDelete(e, item.id)}><MdDelete /></button>
                                     </div>
