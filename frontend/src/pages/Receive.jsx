@@ -18,7 +18,6 @@ function Receive() {
             return
         }
 
-        console.log(payload)
 
         try {
             const res = await axios.patch(
@@ -31,7 +30,6 @@ function Receive() {
                     },
                 }
             )
-            console.log(res)
             if (res.status === 200) {
                 navigate('/inventory')
             }

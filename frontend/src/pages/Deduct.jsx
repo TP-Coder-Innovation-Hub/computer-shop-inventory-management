@@ -30,7 +30,6 @@ function Deduct() {
                     },
                 }
             )
-            console.log(res)
             if (res.status === 200) {
                 navigate('/inventory')
             }
