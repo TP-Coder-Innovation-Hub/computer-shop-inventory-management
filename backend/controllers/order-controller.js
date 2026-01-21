@@ -37,6 +37,14 @@ export const createOrder = async (req, res) => {
                     }
                 }
             })
+
+            await Prisma.transaction.create({
+                data: {
+                    product_id: item.product_id,
+                    type: 'DECREASE',
+                    quantity: item.quantity
+                }
+            })
         }
 
         const order = await Prisma.order.create({
